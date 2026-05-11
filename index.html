@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>税收优惠综合自检 — 宇守信咨询</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; background:#f0f2f5; color:#2d3436; padding-bottom:60px; }
+.header { background:linear-gradient(135deg,#1a237e,#3b82f6); color:white; padding:32px 20px 24px; text-align:center; }
+.header h1 { font-size:22px; font-weight:700; margin-bottom:6px; }
+.header p { font-size:13px; opacity:0.85; }
+.header .badge { display:inline-block; background:rgba(255,255,255,0.2); border-radius:20px; padding:4px 14px; font-size:11px; margin-top:8px; }
+.tabs { display:flex; background:white; box-shadow:0 1px 4px rgba(0,0,0,0.08); position:sticky; top:0; z-index:10; }
+.tab { flex:1; text-align:center; padding:14px 0; font-size:14px; font-weight:500; color:#888; cursor:pointer; border-bottom:3px solid transparent; transition:all .2s; }
+.tab.active { color:#1a237e; border-bottom-color:#1a237e; }
+.panel { display:none; padding:16px; }
+.panel.active { display:block; }
+.card { background:white; border-radius:12px; overflow:hidden; box-shadow:0 1px 3px rgba(0,0,0,0.06); margin-bottom:12px; }
+.card-title { background:#f0f4ff; padding:10px 16px; font-size:13px; font-weight:600; color:#1a237e; border-bottom:1px solid #e0e7ff; }
+.form-row { padding:10px 16px; border-bottom:1px solid #f5f5f5; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.form-row label { font-size:13px; color:#444; min-width:150px; flex-shrink:0; }
+.form-row input,.form-row select { padding:8px 12px; border:1px solid #e0e0e0; border-radius:8px; font-size:13px; flex:1; min-width:80px; max-width:200px; background:#fff8e1; line-height:44px; height:44px; }
+.form-row input:focus,.form-row select:focus { outline:none; border-color:#3b82f6; }
+.form-row .unit { font-size:12px; color:#888; }
+.yesno { display:flex; gap:8px; }
+.yesno span { padding:4px 16px; border-radius:16px; font-size:13px; cursor:pointer; border:1px solid #ddd; color:#666; }
+.yesno span.sel-yes { background:linear-gradient(135deg,#1a237e,#3b82f6); color:white; border-color:#3b82f6; }
+.yesno span.sel-no { background:#e8ecf1; color:#999; border-color:#ddd; }
+.fixed-bottom { position:sticky; bottom:0; background:white; padding:12px 16px; display:flex; gap:10px; box-shadow:0 -2px 8px rgba(0,0,0,0.06); z-index:10; }
+.fixed-bottom button { flex:1; padding:12px; border-radius:10px; font-size:14px; font-weight:600; border:none; cursor:pointer; }
+.btn-primary { background:linear-gradient(135deg,#1a237e,#3b82f6); color:white; }
+.btn-primary:hover { opacity:0.9; }
+.btn-secondary { background:#e8ecf1; color:#555; }
+
+.score-card { background:linear-gradient(135deg,#1a237e,#3b82f6); color:white; border-radius:16px; padding:28px 20px; text-align:center; margin-bottom:16px; }
+.score-card .label { font-size:13px; opacity:0.85; }
+.score-card .score { font-size:40px; font-weight:800; margin:6px 0; }
+.score-card .grade { font-size:16px; font-weight:600; margin-bottom:4px; }
+.score-card .suggestion { font-size:13px; opacity:0.9; line-height:1.6; }
+.result-summary { background:linear-gradient(135deg,#1a237e,#3b82f6); color:white; border-radius:16px; padding:28px 20px; text-align:center; margin-bottom:16px; }
+.result-summary .row { display:flex; justify-content:space-around; margin-top:12px; flex-wrap:wrap; gap:8px; }
+.result-summary .item { flex:1; min-width:100px; }
+.result-summary .item .label { font-size:11px; opacity:0.85; }
+.result-summary .item .val { font-size:22px; font-weight:800; margin:4px 0; }
+.result-summary .item .sub { font-size:12px; opacity:0.85; }
+
+.dim-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:16px; }
+.dim-card { background:white; border-radius:12px; padding:16px; text-align:center; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.dim-card .name { font-size:12px; color:#888; margin-bottom:4px; }
+.dim-card .dscore { font-size:20px; font-weight:700; }
+.dim-card .dstatus { font-size:11px; margin-top:4px; padding:2px 10px; border-radius:10px; display:inline-block; }
+.low { background:#e6f7e6; color:#16a34a; }
+.mid { background:#fef9e7; color:#d97706; }
+.high { background:#feeaea; color:#dc2626; }
+.pass { background:#e6f7e6; color:#16a34a; }
+.warn { background:#fef9e7; color:#d97706; }
+.danger { background:#feeaea; color:#dc2626; }
+.fail { background:#feeaea; color:#dc2626; }
+.caution { background:#fef9e7; color:#d97706; }
+.rate-green { background:#e6f7e6; color:#16a34a; }
+.rate-yellow { background:#fef9e7; color:#d97706; }
+.rate-red { background:#feeaea; color:#dc2626; }
+
+.help-card { background:white; border-radius:12px; padding:20px; margin-bottom:12px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.help-card h3 { font-size:15px; margin-bottom:8px; color:#1a237e; }
+.help-card p,.help-card li { font-size:13px; color:#555; line-height:1.8; }
+.check-list { list-style:none; padding:0; }
+.check-list li { padding:6px 0; font-size:13px; color:#444; border-bottom:1px solid #f5f5f5; display:flex; align-items:center; gap:8px; }
+.check-list li:last-child { border-bottom:none; }
+.detail-item { padding:12px 16px; border-bottom:1px solid #f5f5f5; display:flex; justify-content:space-between; align-items:center; }
+.detail-item:last-child { border-bottom:none; }
+.detail-item .dlabel { font-size:13px; color:#555; }
+.detail-item .dval { font-size:14px; font-weight:600; }
+.detail-item .dval.pass { color:#16a34a; }
+.detail-item .dval.warn { color:#d97706; }
+.detail-item .dval.danger { color:#dc2626; }
+.result-card { background:white; border-radius:12px; padding:16px; margin-bottom:8px; box-shadow:0 1px 3px rgba(0,0,0,0.06); }
+.result-card h3 { font-size:14px; color:#1a237e; margin-bottom:8px; }
+.result-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid #f5f5f5; font-size:13px; }
+.result-row:last-child { border-bottom:none; }
+.result-row .label { color:#555; }
+.result-row .val { font-weight:600; }
+.result-row.total { border-top:2px solid #1a237e; padding-top:8px; margin-top:4px; font-weight:700; }
+.result-row.total .val { color:#1a237e; font-size:16px; }
+.result-green { color:#16a34a; }
+.result-red { color:#dc2626; }
+.result-orange { color:#d97706; }
+
+.member-banner { background:linear-gradient(135deg,#0f0c29,#302b63,#24243e); border-radius:12px; padding:20px; text-align:center; margin-top:16px; }
+.member-banner h3 { font-size:15px; color:white; margin-bottom:6px; }
+.member-banner p { font-size:12px; color:rgba(255,255,255,0.85); line-height:1.6; }
+.member-banner .btn { display:inline-block; background:white; color:#1a237e; padding:8px 24px; border-radius:20px; text-decoration:none; font-size:13px; font-weight:600; margin-top:8px; }
+
+.contact { background:#eef2ff; border-radius:8px; padding:12px; }
+.contact strong { font-size:14px; color:#1a237e; }
+.scenario-grid { display:flex; gap:8px; }
+.scenario-btn { flex:1; padding:10px; border-radius:8px; font-size:13px; font-weight:600; border:2px solid #ddd; background:white; color:#888; cursor:pointer; text-align:center; transition:all .2s; }
+.scenario-btn.active { border-color:#3b82f6; color:#1a237e; background:#eef2ff; }
+.chart-area { background:white; border-radius:16px; padding:20px; box-shadow:0 2px 12px rgba(0,0,0,0.06); margin-bottom:16px; text-align:center; }
+.chart-area canvas { max-width:100%; height:auto; }
+.form-row input[type=range] { flex:1; min-width:120px; max-width:250px; accent-color:#3b82f6; }
+.form-row .val { font-size:14px; font-weight:700; color:#1a237e; min-width:30px; text-align:right; }
+.form-row .hint { font-size:11px; color:#999; }
+.dim-card .bar-bg { position:absolute; bottom:0; left:0; height:4px; background:#e8ecf1; width:100%; }
+.dim-card .bar-fill { position:absolute; bottom:0; left:0; height:4px; transition:width .5s; }
+
+@media (max-width:480px){.dim-grid{grid-template-columns:1fr 1fr}.result-summary .row{flex-direction:column;gap:4px}}
+
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🏆 税收优惠综合自检</h1>
+  <p>小微优惠 · 高新优惠 · 研发加计 · 专项减免 · 区域优惠</p>
+  <div class="badge">您身边的财税专家 · 洪淳宇</div>
+</div>
+<div class="tabs">
+  <div class="tab active" data-tab="input" onclick="st('input')">📝 填数据</div>
+  <div class="tab" data-tab="report" onclick="st('report')">📊 优惠报告</div>
+  <div class="tab" data-tab="help" onclick="st('help')">💡 说明</div>
+</div>
+
+<div class="panel active" id="panel-input">
+  <div class="card">
+    <div class="card-title">📋 企业基本信息</div>
+    <div class="form-row"><label>企业名称</label><input id="compName" value="示例企业"></div>
+    <div class="form-row"><label>所属行业</label>
+      <select id="industry">
+        <option value="manufacturing">制造业</option>
+        <option value="tech">科技/信息技术</option>
+        <option value="service">服务业</option>
+        <option value="trade">商贸零售</option>
+        <option value="construction">建筑业</option>
+        <option value="other">其他</option>
+      </select>
+    </div>
+    <div class="form-row"><label>年营收（万元）</label><input id="revenue" type="number" value="3000"></div>
+    <div class="form-row"><label>员工人数</label><input id="staff" type="number" value="80"></div>
+    <div class="form-row"><label>资产总额（万元）</label><input id="assets" type="number" value="2000"></div>
+    <div class="form-row"><label>年利润总额（万元）</label><input id="profit" type="number" value="200"></div>
+    <div class="form-row"><label>是否高新技术企业</label><div id="qHiTech" class="yesno"><span onclick="yn(this,1)">是</span><span onclick="yn(this,0)" class="sel-no">否</span></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🔍 优惠资格自查</div>
+    <div class="form-row"><label>研发费用占比是否达标？</label><div id="q1" class="yesno"><span onclick="yn(this,1)">是</span><span onclick="yn(this,0)" class="sel-no">否</span></div></div>
+    <div class="form-row"><label>是否满足小型微利条件？</label><div id="q2" class="yesno"><span onclick="yn(this,1)">是</span><span onclick="yn(this,0)" class="sel-no">否</span></div></div>
+    <div class="form-row"><label>是否享受过增值税留抵退税？</label><div id="q3" class="yesno"><span onclick="yn(this,1)">是</span><span onclick="yn(this,0)" class="sel-no">否</span></div></div>
+    <div class="form-row"><label>是否了解并申请了适用区域优惠？</label><div id="q4" class="yesno"><span onclick="yn(this,1)">是</span><span onclick="yn(this,0)" class="sel-no">否</span></div></div>
+    <div class="form-row"><label>是否接触过残保金/重点群体等减免？</label><div id="q5" class="yesno"><span onclick="yn(this,1)">是</span><span onclick="yn(this,0)" class="sel-no">否</span></div></div>
+    <div class="form-row"><label>是否进行过全面的税收优惠梳理？</label><div id="q6" class="yesno"><span onclick="yn(this,1)">是</span><span onclick="yn(this,0)" class="sel-no">否</span></div></div>
+  </div>
+
+  <div class="fixed-bottom">
+    <button class="btn-primary" onclick="calc()">🏆 开始自检</button>
+    <button class="btn-secondary" onclick="resetAll()">🔄 重置</button>
+  </div>
+</div>
+
+<div class="panel" id="panel-report"><div id="reportContent"></div>
+  <div class="fixed-bottom"><button class="btn-secondary" onclick="st('input')">📝 返回修改</button></div>
+</div>
+
+<div class="panel" id="panel-help">
+  <div class="help-card"><h3>📖 使用说明</h3><p>系统扫描企业可能适用的各项税收优惠政策，发现未享受的优惠机会。<br>涵盖：小型微利、高新优惠、研发加计、增值税优惠、区域政策、专项减免。</p></div>
+  <div class="help-card"><h3>📊 评分规则</h3><p>6项自查，已享受/了解计分。分越高说明优惠利用率越高。</p></div>
+  <div class="help-card"><h3>⚠️ 免责声明</h3><p>政策以最新官方文件为准，建议结合专业顾问评估具体适用。</p></div>
+  <div class="member-banner"><h3>🥇 金级会员专属服务</h3><p>金级会员享税收优惠全面梳理与申请辅导<br>电话：186-0129-4989</p><a class="btn" href="https://sparrow528.github.io/tax-membership/" target="_blank">了解会员方案 →</a></div>
+</div>
+
+<script>
+function yn(el,val){
+  var p=el.parentNode;var ss=p.getElementsByTagName('span');
+  for(var i=0;i<ss.length;i++)ss[i].className='';
+  el.className=val===1?'sel-yes':'sel-no';p.dataset.val=val;
+}
+function st(tab){
+  var ts=document.querySelectorAll('.tab');var ps=document.querySelectorAll('.panel');
+  for(var i=0;i<ts.length;i++){ts[i].className='tab'+(ts[i].dataset.tab===tab?' active':'');ps[i].className='panel'+(ps[i].id==='panel-'+tab?' active':'');}
+}
+function calc(){
+  var name=document.getElementById('compName').value||'未命名';
+  var rev=parseFloat(document.getElementById('revenue').value)||0;
+  var staff=parseInt(document.getElementById('staff').value)||0;
+  var assets=parseFloat(document.getElementById('assets').value)||0;
+  var profit=parseFloat(document.getElementById('profit').value)||0;
+  var isHiTech=document.getElementById('qHiTech').dataset.val==1;
+
+  // 小型微利判定
+  var isSmall=rev<=5000&&staff<=300&&assets<=5000;
+  // 高新需由用户确认
+
+  var items=[
+    {id:'q1',l:'研发费用占比达标',cat:'研发优惠',detail:'研发费用占比达标可享受加计扣除'},
+    {id:'q2',l:'满足小型微利条件',cat:'所得税优惠',detail:isSmall?'符合条件！利润≤300万部分适用5%税率':'年营收'+rev+'万/员工'+staff+'人/资产'+assets+'万，'+(!isSmall?'可能不符合':'')},
+    {id:'q3',l:'增值税留抵退税',cat:'增值税优惠',detail:'符合条件的一般纳税人可申请留抵退税'},
+    {id:'q4',l:'区域优惠适用',cat:'专项优惠',detail:'如海南自贸港、西部大开发等区域优惠'},
+    {id:'q5',l:'专项减免',cat:'专项优惠',detail:'残保金、重点群体就业等减免政策'},
+    {id:'q6',l:'全面优惠梳理',cat:'管理',detail:'定期梳理确保不遗漏可享受优惠'}
+  ];
+
+  var used=0,opportunities=[];
+  for(var i=0;i<items.length;i++){
+    var el=document.getElementById(items[i].id);
+    if(el.dataset.val==1){used++;}else{opportunities.push(items[i]);}
+  }
+
+  var grade=used>=5?'🟢 优惠利用率高':used>=3?'🟡 有提升空间':'🔴 优惠利用率低';
+  var suggest='';
+  if(used>=5) suggest='贵企业税收优惠利用率较高。建议定期复盘，关注新政。';
+  else if(used>=3) suggest='尚有'+opportunities.length+'项优惠未充分利用，预计可年节税'+(profit*0.1).toFixed(0)+'万+。';
+  else suggest='大量税收优惠未利用！预计年节税潜力可达'+(profit*0.2).toFixed(0)+'万元以上。';
+
+  // 节税潜力估算
+  var taxSave=0;
+  if(profit>0){
+    if(isSmall) taxSave+=profit*0.2; // 25%→5%
+    if(isHiTech) taxSave+=profit*0.1; // 25%→15%
+  }
+  var totalPotential=taxSave+profit*0.1;
+
+  var html='<div class="score-card"><div class="label">'+name+' — 税收优惠利用率评分</div><div class="score">'+used+'/6</div><div class="grade">'+grade+'</div><div class="suggestion">'+suggest+'</div></div>';
+
+  // 年节税潜力
+  html+='<div class="card"><div class="card-title">💰 年节税潜力评估</div>';
+  if(isSmall) html+='<div class="detail-item"><span class="dlabel">小型微利优惠节税</span><span class="dval">约'+(profit*0.2).toFixed(0)+'万元</span></div>';
+  if(isHiTech) html+='<div class="detail-item"><span class="dlabel">高新技术企业优惠节税</span><span class="dval">约'+(profit*0.1).toFixed(0)+'万元</span></div>';
+  if(!isSmall&&!isHiTech) html+='<div class="detail-item"><span class="dlabel">初步评估</span><span class="dval">建议深入梳理</span></div>';
+  html+='<div class="detail-item" style="background:#fef9e7"><span class="dlabel"><b>预估总节税潜力</b></span><span class="dval" style="color:#b8860b;font-size:16px;font-weight:700">约'+totalPotential.toFixed(0)+'万元/年</span></div>';
+  html+='</div>';
+
+  // 适用优惠列表
+  html+='<div class="card"><div class="card-title">📋 可适用的优惠政策</div>';
+  var policies=[];
+  if(isSmall) policies.push('✅ 小型微利企业所得税优惠（利润≤300万部分5%）');
+  if(isHiTech) policies.push('✅ 高新技术企业15%优惠税率');
+  policies.push('✅ 研发费用加计扣除（100%加计）');
+  policies.push('✅ 增值税小规模纳税人减免（季度30万免）');
+  policies.push('✅ 六税两费减半征收');
+  policies.push('✅ 设备器具一次性税前扣除');
+  if(rev>0) policies.push('✅ 留抵退税政策');
+  policies.push('✅ 重点群体/退役士兵就业税收优惠');
+
+  html+='<div style="padding:12px 16px">';
+  for(var i=0;i<policies.length;i++)html+='<div style="font-size:12px;padding:3px 0;color:#555">'+policies[i]+'</div>';
+  html+='</div></div>';
+
+  if(opportunities.length>0){
+    html+='<div class="card"><div class="card-title">⚠️ 未充分利用的优惠项</div>';
+    for(var i=0;i<opportunities.length;i++)html+='<div class="detail-item"><span class="dlabel">'+opportunities[i].l+'</span><span class="dval" style="color:#dc2626">待挖掘</span></div>';
+    html+='</div>';
+  }
+
+  html+='<div class="member-banner"><h3>🥇 金级会员专属服务</h3><p>金级会员享税收优惠全面梳理与申请辅导<br>电话：186-0129-4989</p><a class="btn" href="https://sparrow528.github.io/tax-membership/" target="_blank">了解会员方案 →</a></div>';
+  document.getElementById('reportContent').innerHTML=html;st('report');
+}
+function resetAll(){
+  var yn=document.querySelectorAll('.yesno');
+  for(var i=0;i<yn.length;i++){
+    var ss=yn[i].getElementsByTagName('span');for(var j=0;j<ss.length;j++)ss[j].className='';
+    var no=yn[i].querySelector('span:nth-child(2)');if(no){no.className='sel-no';yn[i].dataset.val=0;}
+  }
+  document.getElementById('compName').value='';document.getElementById('revenue').value='';document.getElementById('staff').value='';
+  document.getElementById('assets').value='';document.getElementById('profit').value='';document.getElementById('industry').selectedIndex=0;
+}
+</script>
+</body>
+</html>
